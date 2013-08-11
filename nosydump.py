@@ -157,65 +157,40 @@ class PhyPacket(OverlayStructure):
 
 sizeof_phy_packet = sizeof(PhyPacket)
 
+_LinkPacket_common_fields = [
+        ( "priority", c_uint, 4 ),
+        ( "tcode", c_uint, 4 ),
+        ( "rt", c_uint, 2 ),
+        ( "tlabel", c_uint, 6 ),
+        ( "destination", c_uint, 16 ),
+
+        ( "offset_high", c_uint, 16 ),
+        ( "source", c_uint, 16 ),
+
+        ( "offset_low", c_ulong ),
+        ]
+
 class LinkPacket(OverlayStructure):
     class _union(Union):
         class _common(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "offset_high", c_uint, 16 ),
-                    ( "source", c_uint, 16 ),
-                    ( "offset_low", c_ulong ),
-                    ]
+            _fields_ = _LinkPacket_common_fields
             #
 
         class _read_quadlet(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "offset_high", c_uint, 16 ),
-                    ( "source", c_uint, 16 ),
-                    ( "offset_low", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "crc", c_ulong ),
                     ]
             #
 
         class _read_quadlet_response(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "reserved0", c_uint, 12 ),
-                    ( "rcode", c_uint, 4 ),
-                    ( "source", c_uint, 16 ),
-                    ( "reserved1", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "data", c_ulong ),
                     ( "crc", c_ulong ),
                     ]
             #
 
         class _read_block(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "offset_high", c_uint, 16 ),
-                    ( "source", c_uint, 16 ),
-                    ( "offset_low", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "extended_tcode", c_uint, 16 ),
                     ( "data_length", c_uint, 16 ),
                     ( "crc", c_ulong ),
@@ -223,91 +198,44 @@ class LinkPacket(OverlayStructure):
             #
 
         class _read_block_response(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "reserved0", c_uint, 12 ),
-                    ( "rcode", c_uint, 4 ),
-                    ( "source", c_uint, 16 ),
-                    ( "reserved1", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "extended_tcode", c_uint, 16 ),
                     ( "data_length", c_uint, 16 ),
                     ( "crc", c_ulong ),
-                    ( "data", c_ulong ),
+                    ( "data", c_ubyte * 0 ),
                     ]
             #
 
         class _write_quadlet(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "offset_high", c_uint, 16 ),
-                    ( "source", c_uint, 16 ),
-                    ( "offset_low", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "data", c_ulong ),
                     ( "crc", c_ulong ),
                     ]
             #
 
         class _write_block(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "offset_high", c_uint, 16 ),
-                    ( "source", c_uint, 16 ),
-                    ( "offset_low", c_uint, 32 ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "extended_tcode", c_uint, 16 ),
                     ( "data_length", c_uint, 16 ),
                     ( "crc", c_ulong ),
-                    ( "data", c_ulong ),
+                    ( "data", c_ubyte * 0 ),
                     ]
             #
 
         class _write_response(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "reserved0", c_uint, 12 ),
-                    ( "rcode", c_uint, 4 ),
-                    ( "source", c_uint, 16 ),
-                    ( "reserved1", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "crc", c_ulong ),
                     ]
             #
 
         class _cycle_start(Structure):
-            _fields_ = [
-                    ( "priority", c_uint, 4 ),
-                    ( "tcode", c_uint, 4 ),
-                    ( "rt", c_uint, 2 ),
-                    ( "tlabel", c_uint, 6 ),
-                    ( "destination", c_uint, 16 ),
-
-                    ( "offset_high", c_uint, 16 ),
-                    ( "source", c_uint, 16 ),
-                    ( "offset_low", c_ulong ),
+            _fields_ = _LinkPacket_common_fields + [
                     ( "data", c_ulong ),
                     ( "crc", c_ulong ),
                     ]
             #
 
-        class _cycle_start(Structure):
+        class _iso_data(Structure):
             _fields_ = [
                     ( "sy", c_uint, 4 ),
                     ( "tcode", c_uint, 4 ),
@@ -329,6 +257,7 @@ class LinkPacket(OverlayStructure):
                 ( "write_block", _write_block ),
                 ( "write_response", _write_response ),
                 ( "cycle_start", _cycle_start ),
+                ( "iso_data", _iso_data ),
                 ]
         #
 
